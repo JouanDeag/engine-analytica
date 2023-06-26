@@ -35,7 +35,7 @@
 {#if form && !form.success && form.message}
 	<InlineNotification
 		kind={form.success ? 'success' : 'warning'}
-		title="Warning!"
+		title={form.success ? 'Success:' : 'Warning:'}
 		subtitle={form.message}
 	/>
 {/if}
