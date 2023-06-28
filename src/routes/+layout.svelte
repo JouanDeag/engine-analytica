@@ -38,6 +38,7 @@
 
 	import { page } from '$app/stores';
 	import { capitalize } from '$lib/strings';
+	import { invalidateAll } from '$app/navigation';
 
 	$: route = capitalize($page.url.pathname.split('/')[1]) || 'Home';
 
@@ -131,7 +132,9 @@
 				{#if data.session}
 					<HeaderPanelLink href="/">Update profile</HeaderPanelLink>
 					<HeaderPanelLink href="/">Change password</HeaderPanelLink>
-					<HeaderPanelLink href="/logout">Log out</HeaderPanelLink>
+					<HeaderPanelLink data-sveltekit-preload-data="tap" on:click={invalidateAll} href="/logout"
+						>Log out</HeaderPanelLink
+					>
 				{:else}
 					<HeaderPanelLink href="/login">Log in</HeaderPanelLink>
 					<HeaderPanelLink href="/register">Register</HeaderPanelLink>
