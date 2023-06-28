@@ -48,13 +48,23 @@
 			}
 		}
 	}
+
+	let submitting = false;
+
+	const handleSubmit = () => {
+		submitting = true;
+	};
+
+	$: if (form && form.errors) {
+		submitting = false;
+	}
 </script>
 
-{#if form && !form.success && form.message}
+{#if form}
 	<InlineNotification
 		kind={form.success ? 'success' : 'warning'}
 		title={form.success ? 'Success:' : 'Warning:'}
-		subtitle={form.message}
+		subtitle={form.message || 'Invalid details supplied'}
 	/>
 {/if}
 
@@ -63,7 +73,7 @@
 		<Column sm={10} md={8} lg={7}>
 			<h1>Register</h1>
 			<Column padding noGutterLeft>
-				<form method="POST" use:enhance>
+				<form method="POST" use:enhance on:submit={handleSubmit}>
 					<TextInput
 						bind:invalid={invalidEmail.error}
 						invalidText={invalidEmail.message}
@@ -101,7 +111,9 @@
 						{/if}
 					</div>
 
-					<Button icon={ArrowRight} type="submit" style="width: fit-content;">Register</Button>
+					<Button icon={ArrowRight} skeleton={submitting} type="submit" style="width: fit-content;"
+						>Register</Button
+					>
 				</form>
 			</Column>
 			<Link href="/login">Already have an account? Login</Link>

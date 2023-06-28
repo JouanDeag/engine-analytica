@@ -31,13 +31,23 @@
 			invalidPassword.error = form.errors.password;
 		}
 	}
+
+	let submitting = false;
+
+	const handleSubmit = () => {
+		submitting = true;
+	};
+
+	$: if (form && form.errors) {
+		submitting = false;
+	}
 </script>
 
-{#if form && !form.success && form.message}
+{#if form}
 	<InlineNotification
 		kind={form.success ? 'success' : 'warning'}
 		title={form.success ? 'Success:' : 'Warning:'}
-		subtitle={form.message}
+		subtitle={form.message || 'Invalid username or password'}
 	/>
 {/if}
 
@@ -46,7 +56,7 @@
 		<Column sm={10} md={8} lg={7}>
 			<h1>Login</h1>
 			<Column padding noGutterLeft>
-				<form method="POST" use:enhance>
+				<form method="POST" use:enhance on:submit={handleSubmit}>
 					<TextInput
 						bind:invalid={invalidUsername.error}
 						name="username"
@@ -60,7 +70,9 @@
 						placeholder="Enter password..."
 					/>
 					<Checkbox name="remember" labelText="Remember me" />
-					<Button icon={ArrowRight} type="submit" style="width: fit-content;">Login</Button>
+					<Button icon={ArrowRight} skeleton={submitting} type="submit" style="width: fit-content;"
+						>Login</Button
+					>
 				</form>
 			</Column>
 			<Link href="/register">Don't have an account? Register</Link>
