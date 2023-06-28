@@ -11,6 +11,7 @@
 		Link,
 		InlineNotification
 	} from 'carbon-components-svelte';
+	import { ArrowRight } from 'carbon-icons-svelte';
 
 	export let form;
 
@@ -59,7 +60,7 @@
 						placeholder="Enter password..."
 					/>
 					<Checkbox name="remember" labelText="Remember me" />
-					<Button type="submit" style="width: fit-content;">Login</Button>
+					<Button icon={ArrowRight} type="submit" style="width: fit-content;">Login</Button>
 				</form>
 			</Column>
 			<Link href="/register">Don't have an account? Register</Link>

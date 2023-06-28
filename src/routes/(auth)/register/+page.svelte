@@ -11,6 +11,7 @@
 		Link,
 		InlineNotification
 	} from 'carbon-components-svelte';
+	import { ArrowRight } from 'carbon-icons-svelte';
 
 	export let form;
 
@@ -100,7 +101,7 @@
 						{/if}
 					</div>
 
-					<Button type="submit" style="width: fit-content;">Register</Button>
+					<Button icon={ArrowRight} type="submit" style="width: fit-content;">Register</Button>
 				</form>
 			</Column>
 			<Link href="/login">Already have an account? Login</Link>
