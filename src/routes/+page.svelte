@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Grid, Row, Column, Button } from 'carbon-components-svelte';
+	import { Grid, Column, Button } from 'carbon-components-svelte';
 	import { Locked } from 'carbon-icons-svelte';
 
 	export let data;
