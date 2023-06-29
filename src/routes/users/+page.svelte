@@ -55,7 +55,7 @@
 					{ key: 'role', value: 'Role' },
 					{ key: 'engineName', value: 'Engine' },
 					{ key: 'disabled', value: 'Disabled', sort: false },
-					{ key: 'overflow', value: 'Actions', sort: false }
+					{ key: 'overflow', empty: true }
 				]}
 				rows={data.users}
 			>
