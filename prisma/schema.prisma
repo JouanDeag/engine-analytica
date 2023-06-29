@@ -52,6 +52,11 @@ model AuthKey {
 }
 
 model Engine {
-  name     String     @id @unique
+  id        String @default(uuid())
+  name      String @id @unique
+  developer String @default("JouanDeag")
+  tests     Int    @default(0)
+  games     Int    @default(0)
+
   AuthUser AuthUser[]
 }
