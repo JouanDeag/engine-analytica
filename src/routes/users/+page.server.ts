@@ -190,6 +190,19 @@ export const actions = {
 		}
 
 		if (validatedData.role !== modifiedUser.role) {
+			const adminUserCount = await db.authUser.count({
+				where: {
+					role: 'admin'
+				}
+			});
+
+			if (modifiedUser.role === 'admin' && adminUserCount === 1) {
+				return {
+					success: false,
+					message: 'Cannot demote last administrator'
+				};
+			}
+
 			try {
 				await auth.updateUserAttributes(validatedData.id, {
 					role: validatedData.role
