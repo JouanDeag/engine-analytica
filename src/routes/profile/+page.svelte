@@ -48,7 +48,6 @@
 					<SelectItem value="" text="None" />
 				</Select>
 
-				<!-- Buttons to submit and reset  -->
 				<FormGroup>
 					<Button type="submit" kind="primary">Submit</Button>
 					<Button type="reset" kind="secondary">Reset</Button>
