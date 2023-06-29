@@ -19,6 +19,7 @@ declare global {
 			username: string;
 			email: string;
 			role: 'user' | 'admin';
+			engineName: string?;
 		};
 	}
 }

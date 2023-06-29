@@ -19,6 +19,8 @@ model AuthUser {
   username     String        @unique
   email        String        @unique
   role         String        @default("user") // admin, user
+  engine       Engine?       @relation(fields: [engineName], references: [name])
+  engineName   String?
 
   @@map("user")
 }
@@ -44,4 +46,9 @@ model AuthKey {
 
   @@index([user_id])
   @@map("auth_key")
+}
+
+model Engine {
+  name     String     @id @unique
+  AuthUser AuthUser[]
 }

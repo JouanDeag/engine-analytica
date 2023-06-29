@@ -130,7 +130,7 @@
 				<HeaderPanelDivider>My Profile</HeaderPanelDivider>
 
 				{#if data.session}
-					<HeaderPanelLink href="/">Update profile</HeaderPanelLink>
+					<HeaderPanelLink href="/profile">Update profile</HeaderPanelLink>
 					<HeaderPanelLink href="/">Change password</HeaderPanelLink>
 					<HeaderPanelLink data-sveltekit-preload-data="tap" on:click={invalidateAll} href="/logout"
 						>Log out</HeaderPanelLink
