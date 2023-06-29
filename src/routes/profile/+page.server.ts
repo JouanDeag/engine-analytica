@@ -50,7 +50,7 @@ export const actions = {
 				const username = z.string().min(3).max(32).parse(validatedData.username).toLowerCase();
 
 				auth.updateUserAttributes(user.userId, {
-					username: validatedData.username
+					username: username
 				});
 			}
 
