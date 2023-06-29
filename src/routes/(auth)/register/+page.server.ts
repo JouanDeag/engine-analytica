@@ -67,12 +67,12 @@ export const actions = {
 			const user = await auth.createUser({
 				primaryKey: {
 					providerId: 'username',
-					providerUserId: username,
+					providerUserId: username.toLowerCase(),
 					password
 				},
 				attributes: {
-					username,
-					email,
+					username: username.toLowerCase(),
+					email: email.toLowerCase(),
 					role: assignedRole
 				}
 			});
