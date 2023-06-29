@@ -20,7 +20,7 @@ model AuthUser {
   email        String        @unique
   role         String        @default("user") // admin, user
 
-  disabled Boolean @default(false)
+  disabled Boolean @default(true)
 
   engine     Engine? @relation(fields: [engineName], references: [name])
   engineName String?

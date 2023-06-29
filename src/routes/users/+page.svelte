@@ -15,6 +15,7 @@
 		FormGroup,
 		InlineNotification
 	} from 'carbon-components-svelte';
+	import type { DataTableRow } from 'carbon-components-svelte/types/DataTable/DataTable.svelte.js';
 	import { CheckmarkOutline, TrashCan, Warning } from 'carbon-icons-svelte';
 
 	export let data;
@@ -22,12 +23,20 @@
 
 	let deleteModalOpen = false;
 	let editModalOpen = false;
+	let disableModalOpen = false;
 
 	let selectedUser = data.user;
 
 	$: if (form && form.success) {
+		deleteModalOpen = false;
 		editModalOpen = false;
+		disableModalOpen = false;
 	}
+
+	const handleGenericModalOpen = (row: DataTableRow) => {
+		form = null;
+		selectedUser = row;
+	};
 </script>
 
 <Grid noGutter>
@@ -55,15 +64,25 @@
 						<OverflowMenu flipped>
 							<OverflowMenuItem
 								text="Edit"
-								on:click={() => (editModalOpen = true)}
-								on:click={() => (selectedUser = row)}
+								on:click={() => {
+									handleGenericModalOpen(row);
+									editModalOpen = true;
+								}}
 							/>
-							<OverflowMenuItem href="/" text="Disable" on:click={() => (selectedUser = row)} />
+							<OverflowMenuItem
+								text={row.disabled ? 'Enable' : 'Disable'}
+								on:click={() => {
+									handleGenericModalOpen(row);
+									disableModalOpen = true;
+								}}
+							/>
 							<OverflowMenuItem
 								danger
 								text="Delete"
-								on:click={() => (deleteModalOpen = true)}
-								on:click={() => (selectedUser = row)}
+								on:click={() => {
+									handleGenericModalOpen(row);
+									deleteModalOpen = true;
+								}}
 							/>
 						</OverflowMenu>
 					{:else if cell.key === 'disabled'}
@@ -85,6 +104,38 @@
 
 <Modal
 	danger
+	modalHeading="{selectedUser.disabled ? 'Enable' : 'Disable'} user"
+	hasForm
+	open={disableModalOpen}
+	on:close={() => (disableModalOpen = false)}
+	passiveModal
+>
+	{#if form}
+		<InlineNotification
+			kind={form.success ? 'success' : 'error'}
+			title={form.success ? 'Success' : 'Error:'}
+			subtitle={form.message}
+		/>
+	{/if}
+	<p>Are you sure you want to {selectedUser.disabled ? 'enable' : 'disable'} this user?</p>
+	<br />
+	<form action="?/{selectedUser.disabled ? 'enable' : 'disable'}" method="POST" use:enhance>
+		<FormGroup noMargin>
+			{#key form}
+				<input type="hidden" name="id" value={selectedUser.id} />
+			{/key}
+			<Button kind="secondary">Cancel</Button>
+			<Button
+				type="submit"
+				kind={selectedUser.disabled ? 'primary' : 'danger'}
+				icon={CheckmarkOutline}>{selectedUser.disabled ? 'Enable' : 'Disable'}</Button
+			>
+		</FormGroup>
+	</form>
+</Modal>
+
+<Modal
+	danger
 	modalHeading="Delete user"
 	hasForm
 	open={deleteModalOpen}
@@ -102,7 +153,7 @@
 	<p>This is a permanent action and cannot be undone.</p>
 	<br />
 	<form action="?/delete" method="POST" use:enhance>
-		<FormGroup>
+		<FormGroup noMargin>
 			{#key form}
 				<input type="hidden" name="id" value={selectedUser.id} />
 			{/key}

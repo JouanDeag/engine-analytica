@@ -279,5 +279,108 @@ export const actions = {
 			success: true,
 			message: 'User deleted successfully'
 		};
+	},
+
+	async disable({ locals, request }) {
+		const { session, user } = await locals.auth.validateUser();
+
+		if (!session) {
+			throw redirect(301, '/login');
+		}
+
+		if (user.role !== 'admin') {
+			throw redirect(301, '/');
+		}
+
+		const formData = await request.formData();
+		const data = Object.fromEntries(formData.entries());
+
+		let id;
+
+		try {
+			id = z.string().min(3).max(32).parse(data.id);
+		} catch (error) {
+			console.log(error);
+
+			return {
+				success: false,
+				message: 'Invalid user id'
+			};
+		}
+
+		if (id === user.userId) {
+			return {
+				success: false,
+				message: 'You cannot disable your own account'
+			};
+		}
+
+		try {
+			await auth.updateUserAttributes(id, {
+				disabled: true
+			});
+
+			await auth.invalidateAllUserSessions(id);
+		} catch (error) {
+			console.log(error);
+
+			return {
+				success: false,
+				message: 'An error occured when disabling user'
+			};
+		}
+
+		return {
+			success: true,
+			message: 'User disabled successfully'
+		};
+	},
+
+	async enable({ locals, request }) {
+		const { session, user } = await locals.auth.validateUser();
+
+		if (!session) {
+			throw redirect(301, '/login');
+		}
+
+		if (user.role !== 'admin') {
+			throw redirect(301, '/');
+		}
+
+		const formData = await request.formData();
+		const data = Object.fromEntries(formData.entries());
+
+		let id;
+
+		try {
+			id = z.string().min(3).max(32).parse(data.id);
+		} catch (error) {
+			console.log(error);
+
+			return {
+				success: false,
+				message: 'Invalid user id'
+			};
+		}
+
+		try {
+			await auth.updateUserAttributes(id, {
+				disabled: false
+			});
+
+			await auth.invalidateAllUserSessions(id);
+		} catch (error) {
+			console.log(error);
+
+			return {
+				success: false,
+				message: 'An error occured when enabling user'
+			};
+		}
+
+		return {
+			success: true,
+			message: 'User enabled successfully'
+		};
 	}
 };

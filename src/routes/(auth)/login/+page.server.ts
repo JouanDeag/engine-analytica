@@ -1,5 +1,6 @@
 import { isZodError } from '$lib/zod.js';
 import { auth } from '$lib/server/lucia';
+import { db } from '$lib/server/db';
 import { fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 
@@ -40,6 +41,24 @@ export const actions = {
 
 		try {
 			const key = await auth.useKey('username', username, password);
+
+			const user = await db.authUser.findUnique({
+				where: {
+					username: username
+				}
+			});
+
+			if (user && user.disabled) {
+				return {
+					success: false,
+					message: 'Your account is disabled, contact an administrator',
+					errors: {
+						username: false,
+						password: false
+					}
+				};
+			}
+
 			const session = await auth.createSession(key.userId);
 			locals.auth.setSession(session);
 		} catch {

@@ -63,6 +63,7 @@ export const actions = {
 
 		try {
 			const assignedRole = amountOfUsers === 0 ? 'admin' : 'user';
+			const shouldDisable = amountOfUsers === 0 ? false : true;
 
 			const user = await auth.createUser({
 				primaryKey: {
@@ -73,7 +74,8 @@ export const actions = {
 				attributes: {
 					username: username.toLowerCase(),
 					email: email.toLowerCase(),
-					role: assignedRole
+					role: assignedRole,
+					disabled: shouldDisable
 				}
 			});
 			const session = await auth.createSession(user.userId);
