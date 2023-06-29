@@ -19,8 +19,11 @@ model AuthUser {
   username     String        @unique
   email        String        @unique
   role         String        @default("user") // admin, user
-  engine       Engine?       @relation(fields: [engineName], references: [name])
-  engineName   String?
+
+  disabled Boolean @default(false)
+
+  engine     Engine? @relation(fields: [engineName], references: [name])
+  engineName String?
 
   @@map("user")
 }

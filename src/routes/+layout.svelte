@@ -157,7 +157,7 @@
 
 			{#if data.user.role === 'admin'}
 				<SideNavMenu icon={UserAdmin} text="Admin">
-					<SideNavLink icon={Events} href="/" text="Users" />
+					<SideNavLink icon={Events} href="/users" text="Users" />
 					<SideNavLink icon={QuadrantPlot} href="/" text="Engines" />
 					<SideNavLink icon={Catalog} href="/" text="Audit log" />
 				</SideNavMenu>

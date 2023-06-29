@@ -20,6 +20,7 @@ declare global {
 			email: string;
 			role: 'user' | 'admin';
 			engineName: string?;
+			disabled: boolean;
 		};
 	}
 }
