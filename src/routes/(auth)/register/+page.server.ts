@@ -78,6 +78,21 @@ export const actions = {
 					disabled: shouldDisable
 				}
 			});
+
+			if (shouldDisable) {
+				return {
+					success: true,
+					message: 'User created successfully, please wait for an admin to approve your account',
+					errors: {
+						username: false,
+						email: false,
+						password: false,
+						confirmPassword: false,
+						terms: false
+					}
+				};
+			}
+
 			const session = await auth.createSession(user.userId);
 			locals.auth.setSession(session);
 		} catch {
