@@ -45,6 +45,10 @@
 			<h1>Administrate users</h1>
 			<br />
 
+			{#if form && form.success}
+				<InlineNotification kind="success" title="Success:" subtitle={form.message} />
+			{/if}
+
 			<DataTable
 				title="Users"
 				description="All users in the system"
