@@ -47,34 +47,15 @@
 	let isSideNavOpen = false;
 	let isOpen1 = false;
 
-	const searchData = [
-		{
-			href: '/',
-			text: 'Kubernetes Service',
-			description:
-				'Deploy secure, highly available apps in a native Kubernetes experience. IBM Cloud Kubernetes Service creates a cluster of compute hosts and deploys highly available containers.'
-		},
-		{
-			href: '/',
-			text: 'Red Hat OpenShift on IBM Cloud',
-			description:
-				'Deploy and secure enterprise workloads on native OpenShift with developer focused tools to run highly available apps. OpenShift clusters build on Kubernetes container orchestration that offers consistency and flexibility in operations.'
-		},
-		{
-			href: '/',
-			text: 'Container Registry',
-			description:
-				'Securely store container images and monitor their vulnerabilities in a private registry.'
-		},
-		{
-			href: '/',
-			text: 'Code Engine',
-			description: 'Run your application, job, or container on a managed serverless platform.'
-		}
-	];
+	const searchData = data.engines.map((engine) => {
+		return {
+			text: engine.name,
+			description: `by ${engine.developer}`,
+			href: `/engines/${engine.name}`
+		};
+	});
 
 	let searchString = '';
-	let lowerCaseValue = searchString.toLowerCase();
 
 	$: lowerCaseValue = searchString.toLowerCase();
 	$: results =
