@@ -114,12 +114,8 @@
 	on:close={() => (disableModalOpen = false)}
 	passiveModal
 >
-	{#if form}
-		<InlineNotification
-			kind={form.success ? 'success' : 'error'}
-			title={form.success ? 'Success' : 'Error:'}
-			subtitle={form.message}
-		/>
+	{#if form && !form.success}
+		<InlineNotification kind="error" title="Error:" subtitle={form.message} />
 	{/if}
 	<p>Are you sure you want to {selectedUser.disabled ? 'enable' : 'disable'} this user?</p>
 	<br />
@@ -146,12 +142,8 @@
 	on:close={() => (deleteModalOpen = false)}
 	passiveModal
 >
-	{#if form}
-		<InlineNotification
-			kind={form.success ? 'success' : 'error'}
-			title={form.success ? 'Success' : 'Error:'}
-			subtitle={form.message}
-		/>
+	{#if form && !form.success}
+		<InlineNotification kind="error" title="Error:" subtitle={form.message} />
 	{/if}
 	<p>Are you sure you want to delete this user?</p>
 	<p>This is a permanent action and cannot be undone.</p>
@@ -175,12 +167,8 @@
 	passiveModal
 >
 	{#key form}
-		{#if form}
-			<InlineNotification
-				kind={form.success ? 'success' : 'error'}
-				title={form.success ? 'Success' : 'Error:'}
-				subtitle={form.message}
-			/>
+		{#if form && !form.success}
+			<InlineNotification kind="error" title="Error:" subtitle={form.message} />
 		{/if}
 
 		<form method="POST" action="?/edit" use:enhance>
