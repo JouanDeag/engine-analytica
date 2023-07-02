@@ -33,6 +33,7 @@
 
 	// Results
 	$: results = data.engines
+		.filter((engine) => engine.name.toLowerCase().includes(search.toLowerCase()))
 		.map((engine) => {
 			return {
 				id: engine.id,
@@ -43,8 +44,7 @@
 					return test.wonGames + test.tiedGames + test.lostGames;
 				}).reduce((partialSum, a) => partialSum + a, 0)
 			};
-		})
-		.filter((engine) => engine.name.toLowerCase().includes(search.toLowerCase()));
+		});
 
 	// State for modal
 	let addModalOpen = false;
