@@ -1,9 +1,14 @@
 <script lang="ts">
+	// Carbon components
 	import { Grid, Row, Column, DataTable, Button } from 'carbon-components-svelte';
+
+	// Icons
 	import { Undo } from 'carbon-icons-svelte';
 
+	// Page data
 	export let data;
 
+	// Format test data
 	const tests = data.tests.map((test) => {
 		return {
 			id: test.id,
