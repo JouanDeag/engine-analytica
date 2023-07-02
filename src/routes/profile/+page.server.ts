@@ -1,19 +1,11 @@
-import { redirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/lucia';
 import { db } from '$lib/server/db';
 import { z } from 'zod';
+import { parseFormData } from '$lib/server/form';
+import { userOnlyRoute } from '$lib/server/routing.js';
 
 export const load = async ({ locals }) => {
-	const { session, user } = await locals.auth.validateUser();
-
-	if (!session) {
-		throw redirect(301, '/login');
-	}
-
-	return {
-		user,
-		session
-	};
+	await userOnlyRoute(locals);
 };
 
 const changeUserSchema = z.object({
@@ -25,10 +17,9 @@ const changeUserSchema = z.object({
 
 export const actions = {
 	async default({ locals, request }) {
-		const formData = await request.formData();
-		const data = Object.fromEntries(formData.entries());
+		const data = await parseFormData(request);
 
-		const { user } = await locals.auth.validateUser();
+		const { user } = await userOnlyRoute(locals);
 
 		try {
 			const validatedData = changeUserSchema.parse(data);

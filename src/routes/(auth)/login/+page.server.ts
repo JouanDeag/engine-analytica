@@ -1,14 +1,13 @@
 import { isZodError } from '$lib/zod.js';
 import { auth } from '$lib/server/lucia';
 import { db } from '$lib/server/db';
-import { fail, redirect } from '@sveltejs/kit';
+import { guestOnlyRoute } from '$lib/server/routing';
+
+import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
 
 export const load = async ({ locals }) => {
-	const { session } = await locals.auth.validateUser();
-	if (session) {
-		throw redirect(301, '/');
-	}
+	await guestOnlyRoute(locals);
 };
 
 const loginSchema = z

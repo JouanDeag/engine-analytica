@@ -1,24 +1,17 @@
-import { redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { auth } from '$lib/server/lucia';
+import { parseFormData } from '$lib/server/form';
+import { adminOnlyRoute } from '$lib/server/routing';
+
 import { z } from 'zod';
 
 export const load = async ({ locals }) => {
-	const { session, user } = await locals.auth.validateUser();
-	if (!session) {
-		throw redirect(301, '/login');
-	}
-
-	if (user.role !== 'admin') {
-		throw redirect(301, '/');
-	}
+	await adminOnlyRoute(locals);
 
 	const users = await db.authUser.findMany();
 	const engines = await db.engine.findMany();
 
 	return {
-		user,
-		session,
 		users,
 		engines
 	};
@@ -34,18 +27,8 @@ const changeUserSchema = z.object({
 
 export const actions = {
 	async edit({ locals, request }) {
-		const { session, user } = await locals.auth.validateUser();
-
-		if (!session) {
-			throw redirect(301, '/login');
-		}
-
-		if (user.role !== 'admin') {
-			throw redirect(301, '/');
-		}
-
-		const formData = await request.formData();
-		const data = Object.fromEntries(formData.entries());
+		await adminOnlyRoute(locals);
+		const data = await parseFormData(request);
 
 		let validatedData;
 		let username;
@@ -223,18 +206,8 @@ export const actions = {
 		};
 	},
 	async delete({ locals, request }) {
-		const { session, user } = await locals.auth.validateUser();
-
-		if (!session) {
-			throw redirect(301, '/login');
-		}
-
-		if (user.role !== 'admin') {
-			throw redirect(301, '/');
-		}
-
-		const formData = await request.formData();
-		const data = Object.fromEntries(formData.entries());
+		await adminOnlyRoute(locals);
+		const data = await parseFormData(request);
 
 		let id;
 
@@ -295,18 +268,8 @@ export const actions = {
 	},
 
 	async disable({ locals, request }) {
-		const { session, user } = await locals.auth.validateUser();
-
-		if (!session) {
-			throw redirect(301, '/login');
-		}
-
-		if (user.role !== 'admin') {
-			throw redirect(301, '/');
-		}
-
-		const formData = await request.formData();
-		const data = Object.fromEntries(formData.entries());
+		const { user } = await adminOnlyRoute(locals);
+		const data = await parseFormData(request);
 
 		let id;
 
@@ -350,18 +313,8 @@ export const actions = {
 	},
 
 	async enable({ locals, request }) {
-		const { session, user } = await locals.auth.validateUser();
-
-		if (!session) {
-			throw redirect(301, '/login');
-		}
-
-		if (user.role !== 'admin') {
-			throw redirect(301, '/');
-		}
-
-		const formData = await request.formData();
-		const data = Object.fromEntries(formData.entries());
+		await adminOnlyRoute(locals);
+		const data = await parseFormData(request);
 
 		let id;
 

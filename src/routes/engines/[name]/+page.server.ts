@@ -1,5 +1,6 @@
 import { db } from '$lib/server/db';
-import { error, redirect } from '@sveltejs/kit';
+import { userOnlyRoute } from '$lib/server/routing';
+import { error } from '@sveltejs/kit';
 import { z } from 'zod';
 
 // Schema for validating data
@@ -8,12 +9,7 @@ const paramsSchema = z.object({
 });
 
 export const load = async ({ locals, params }) => {
-	const { session, user } = await locals.auth.validateUser();
-
-	// Redirect to login page if user is not logged in
-	if (!session) {
-		throw redirect(301, '/login');
-	}
+	await userOnlyRoute(locals);
 
 	// Get engine name from URL
 	let name = params.name.toLowerCase();
@@ -45,8 +41,6 @@ export const load = async ({ locals, params }) => {
 
 	// Return data to the page
 	return {
-		session,
-		user,
 		engine,
 		tests
 	};

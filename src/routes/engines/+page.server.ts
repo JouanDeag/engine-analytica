@@ -1,19 +1,9 @@
 import { db } from '$lib/server/db.js';
-import { redirect } from '@sveltejs/kit';
+import { adminOnlyRoute } from '$lib/server/routing';
 import { z } from 'zod';
 
 export const load = async ({ locals }) => {
-	const { session, user } = await locals.auth.validateUser();
-
-	// Redirect to login page if user is not logged in
-	if (!session) {
-		throw redirect(301, '/login');
-	}
-
-	// Only allow admins to access this page
-	if (user.role !== 'admin') {
-		throw redirect(301, '/');
-	}
+	await adminOnlyRoute(locals);
 
 	// Fetch engines and their tests with won, tied and lost games
 	const engines = await db.engine.findMany({
@@ -33,8 +23,6 @@ export const load = async ({ locals }) => {
 
 	// Return data to the page
 	return {
-		session,
-		user,
 		engines,
 		users
 	};
@@ -49,17 +37,7 @@ const addEngineSchema = z.object({
 
 export const actions = {
 	async default({ locals, request }) {
-		const { session, user } = await locals.auth.validateUser();
-
-		// Redirect to login page if user is not logged in
-		if (!session) {
-			throw redirect(301, '/login');
-		}
-
-		// Only allow admins to access this action
-		if (user.role !== 'admin') {
-			throw redirect(301, '/');
-		}
+		await adminOnlyRoute(locals);
 
 		// Parse form data
 		const formData = await request.formData();
