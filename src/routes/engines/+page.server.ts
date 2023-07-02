@@ -5,14 +5,17 @@ import { z } from 'zod';
 export const load = async ({ locals }) => {
 	const { session, user } = await locals.auth.validateUser();
 
+	// Redirect to login page if user is not logged in
 	if (!session) {
 		throw redirect(301, '/login');
 	}
 
+	// Only allow admins to access this page
 	if (user.role !== 'admin') {
 		throw redirect(301, '/');
 	}
 
+	// Fetch engines and their tests with won, tied and lost games
 	const engines = await db.engine.findMany({
 		include: {
 			Tests: {
@@ -24,8 +27,11 @@ export const load = async ({ locals }) => {
 			}
 		}
 	});
+
+	// Fetch users
 	const users = await db.authUser.findMany();
 
+	// Return data to the page
 	return {
 		session,
 		user,
@@ -34,6 +40,7 @@ export const load = async ({ locals }) => {
 	};
 };
 
+// Schema for validating data
 const addEngineSchema = z.object({
 	name: z.string().min(3).max(32),
 	developer: z.string().min(1).max(64),
@@ -44,34 +51,42 @@ export const actions = {
 	async default({ locals, request }) {
 		const { session, user } = await locals.auth.validateUser();
 
+		// Redirect to login page if user is not logged in
 		if (!session) {
 			throw redirect(301, '/login');
 		}
 
+		// Only allow admins to access this action
 		if (user.role !== 'admin') {
 			throw redirect(301, '/');
 		}
 
+		// Parse form data
 		const formData = await request.formData();
 		const data = Object.fromEntries(formData.entries());
 
+		// Validate data
 		let validatedData;
 
+		// Try to parse data
 		try {
 			validatedData = addEngineSchema.parse(data);
 		} catch {
+			// Return error if data is invalid
 			return {
 				success: false,
 				message: 'Invalid data supplied'
 			};
 		}
 
+		// Check if engine already exists
 		const existingEngine = await db.engine.findUnique({
 			where: {
 				name: validatedData.name
 			}
 		});
 
+		// Return error if engine already exists
 		if (existingEngine) {
 			return {
 				success: false,
@@ -79,6 +94,7 @@ export const actions = {
 			};
 		}
 
+		// Create engine
 		try {
 			const engine = await db.engine.create({
 				data: {
@@ -87,13 +103,16 @@ export const actions = {
 				}
 			});
 
+			// Connect engine to user if user is not 'none'
 			if (validatedData.user !== 'none') {
+				// Find user
 				const user = await db.authUser.findUnique({
 					where: {
 						username: validatedData.user
 					}
 				});
 
+				// Return error if user does not exist
 				if (!user) {
 					return {
 						success: false,
@@ -101,6 +120,7 @@ export const actions = {
 					};
 				}
 
+				// Connect engine to user
 				await db.engine.update({
 					where: {
 						name: engine.name
@@ -115,6 +135,7 @@ export const actions = {
 				});
 			}
 		} catch (error) {
+			// Return error if engine could not be created
 			console.log(error);
 
 			return {
@@ -123,6 +144,7 @@ export const actions = {
 			};
 		}
 
+		// Return success message
 		return {
 			success: true,
 			message: 'Engine successfully added!'

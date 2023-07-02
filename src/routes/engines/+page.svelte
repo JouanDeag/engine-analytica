@@ -1,5 +1,8 @@
 <script lang="ts">
+	// Form enhancer
 	import { enhance } from '$app/forms';
+
+	// Carbon components
 	import {
 		Grid,
 		Row,
@@ -17,13 +20,18 @@
 		Select,
 		SelectItem
 	} from 'carbon-components-svelte';
+
+	// Icons
 	import { Add, ArrowRight } from 'carbon-icons-svelte';
 
+	// Data
 	export let data;
 	export let form;
 
+	// Search bar
 	let search = '';
 
+	// Results
 	$: results = data.engines
 		.map((engine) => {
 			return {
@@ -38,8 +46,10 @@
 		})
 		.filter((engine) => engine.name.toLowerCase().includes(search.toLowerCase()));
 
+	// State for modal
 	let addModalOpen = false;
 
+	// Form enhancer
 	$: if (form && form.success) {
 		addModalOpen = false;
 	}
