@@ -25,6 +25,8 @@ model AuthUser {
   engine     Engine? @relation(fields: [engineName], references: [name])
   engineName String?
 
+  Tests Test[]
+
   @@map("user")
 }
 
@@ -58,5 +60,54 @@ model Engine {
   tests     Int    @default(0)
   games     Int    @default(0)
 
+  timeControlDefault String @default("8.0+0.08") @map("time_control_default")
+
   AuthUser AuthUser[]
+  Tests    Test[]
+}
+
+model Test {
+  id   String @id @unique @default(uuid())
+  name String
+
+  author     AuthUser @relation(fields: [authorName], references: [username])
+  authorName String
+
+  mainBranch     String @map("main_branch")
+  mainGit        String @map("main_git")
+  mainHash       String @map("main_hash")
+  mainBenchScore Int    @map("main_score")
+  mainOptions    String @default("Threads=1 Hash=32") @map("main_options")
+
+  testBranch     String @map("test_branch")
+  testGit        String @map("test_git")
+  testHash       String @map("test_hash")
+  testBenchScore Int    @map("test_score")
+  testOptions    String @default("Threads=1 Hash=32") @map("test_options")
+
+  openingBook      String @map("opening_book")
+  winAdjudication  String @default("movecount=3 score=400") @map("win_adjudication")
+  drawAdjudication String @default("movenumber=40 movecount=8 score=10") @map("draw_adjudication")
+  timeControl      String @map("time_control")
+
+  priority     Int @default(0)
+  throughput   Int @default(1000)
+  reportRate   Int @default(16) @map("report_rate")
+  workloadSize Int @default(32) @map("workload_size")
+
+  wonGames  Int @map("won_games")
+  tiedGames Int @map("tied_games")
+  lostGames Int @map("lost_games")
+
+  elo       Float  @default(0)
+  eloMargin Float  @default(0) @map("elo_margin")
+  eloBounds String @default("[0.00, 5.00]") @map("elo_bounds")
+  llr       Float
+  llrBounds String @default("(-2.94, 2.94)") @map("llr_bounds")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  engine     Engine @relation(fields: [engineName], references: [name])
+  engineName String
 }

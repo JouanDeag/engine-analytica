@@ -24,9 +24,19 @@
 
 	let search = '';
 
-	$: results = data.engines.filter((engine) =>
-		engine.name.toLowerCase().includes(search.toLowerCase())
-	);
+	$: results = data.engines
+		.map((engine) => {
+			return {
+				id: engine.id,
+				name: engine.name,
+				developer: engine.developer,
+				tests: engine.Tests.length,
+				games: engine.Tests.map((test) => {
+					return test.wonGames + test.tiedGames + test.lostGames;
+				}).reduce((partialSum, a) => partialSum + a, 0)
+			};
+		})
+		.filter((engine) => engine.name.toLowerCase().includes(search.toLowerCase()));
 
 	let addModalOpen = false;
 
@@ -60,13 +70,19 @@
 						<Button icon={Add} on:click={() => (addModalOpen = true)}>Add engine</Button>
 					</ToolbarContent>
 				</Toolbar>
-				<svelte:fragment slot="cell" let:cell>
+				<svelte:fragment slot="cell" let:cell let:row>
 					{#if cell.key === 'developer'}
 						<OutboundLink href="https://github.com/{cell.value}">{cell.value}</OutboundLink>
 					{:else if cell.key === 'delete'}
-						<Button kind="tertiary" iconDescription="Delete" icon={ArrowRight} size="small"
-							>View</Button
+						<Button
+							kind="tertiary"
+							iconDescription="Delete"
+							icon={ArrowRight}
+							size="small"
+							href="/engines/{row.name}"
 						>
+							View
+						</Button>
 					{:else}
 						{cell.value}
 					{/if}

@@ -13,7 +13,17 @@ export const load = async ({ locals }) => {
 		throw redirect(301, '/');
 	}
 
-	const engines = await db.engine.findMany();
+	const engines = await db.engine.findMany({
+		include: {
+			Tests: {
+				select: {
+					wonGames: true,
+					tiedGames: true,
+					lostGames: true
+				}
+			}
+		}
+	});
 	const users = await db.authUser.findMany();
 
 	return {
