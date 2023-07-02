@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 
 const paramsSchema = z.object({
@@ -8,6 +8,10 @@ const paramsSchema = z.object({
 
 export const load = async ({ locals, params }) => {
 	const { session, user } = await locals.auth.validateUser();
+
+	if (!session) {
+		throw redirect(301, '/login');
+	}
 
 	let name = params.name.toLowerCase();
 
