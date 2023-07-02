@@ -14,17 +14,20 @@ model AuthUser {
   id           String        @id @unique
   auth_session AuthSession[]
   auth_key     AuthKey[]
-  // here you can add custom fields for your user
-  // e.g. name, email, username, roles, etc.
-  username     String        @unique
-  email        String        @unique
-  role         String        @default("user") // admin, user
 
+  // Custom fields
+  username String @unique
+  email    String @unique
+  role     String @default("user") // admin, user
+
+  // If user is disabled, they cannot login
   disabled Boolean @default(true)
 
+  // Engine created by user
   engine     Engine? @relation(fields: [engineName], references: [name])
   engineName String?
 
+  // Tests created by user
   Tests Test[]
 
   @@map("user")
@@ -54,60 +57,77 @@ model AuthKey {
 }
 
 model Engine {
-  id        String @default(uuid())
-  name      String @id @unique
-  developer String @default("JouanDeag")
-  tests     Int    @default(0)
-  games     Int    @default(0)
+  // Internal ID
+  id String @id @default(uuid())
 
+  // Engine name
+  name String @unique
+
+  // Primary engine developer
+  developer String @default("JouanDeag")
+
+  // Default options for the testing engine
   timeControlDefault String @default("8.0+0.08") @map("time_control_default")
 
+  // Linked data to other tables
   AuthUser AuthUser[]
   Tests    Test[]
 }
 
 model Test {
-  id   String @id @unique @default(uuid())
+  // Internal ID
+  id String @id @unique @default(uuid())
+
+  // Name of the test
   name String
 
+  // Author / creator of the test
   author     AuthUser @relation(fields: [authorName], references: [username])
   authorName String
 
+  // Engine to test against 
   mainBranch     String @map("main_branch")
   mainGit        String @map("main_git")
   mainHash       String @map("main_hash")
   mainBenchScore Int    @map("main_score")
   mainOptions    String @default("Threads=1 Hash=32") @map("main_options")
 
+  // Engine to test
   testBranch     String @map("test_branch")
   testGit        String @map("test_git")
   testHash       String @map("test_hash")
   testBenchScore Int    @map("test_score")
   testOptions    String @default("Threads=1 Hash=32") @map("test_options")
 
+  // Test options
   openingBook      String @map("opening_book")
   winAdjudication  String @default("movecount=3 score=400") @map("win_adjudication")
   drawAdjudication String @default("movenumber=40 movecount=8 score=10") @map("draw_adjudication")
   timeControl      String @map("time_control")
 
+  // Test parameters
   priority     Int @default(0)
   throughput   Int @default(1000)
   reportRate   Int @default(16) @map("report_rate")
   workloadSize Int @default(32) @map("workload_size")
 
+  // Game stats
   wonGames  Int @map("won_games")
   tiedGames Int @map("tied_games")
   lostGames Int @map("lost_games")
 
+  // Rating stats
   elo       Float  @default(0)
   eloMargin Float  @default(0) @map("elo_margin")
   eloBounds String @default("[0.00, 5.00]") @map("elo_bounds")
   llr       Float
   llrBounds String @default("(-2.94, 2.94)") @map("llr_bounds")
 
+  // Time data
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  // Related engine
   engine     Engine @relation(fields: [engineName], references: [name])
   engineName String
 }
