@@ -40,7 +40,8 @@
 	import { capitalize } from '$lib/strings';
 	import { invalidateAll } from '$app/navigation';
 
-	$: route = capitalize($page.url.pathname.split('/')[1]) || 'Home';
+	$: path = $page.url.pathname.split('/');
+	$: title = capitalize(path[path.length - 1]) || 'Home';
 
 	export let data;
 
@@ -76,7 +77,7 @@
 </script>
 
 <svelte:head>
-	<title>Engine Analytica | {route}</title>
+	<title>Engine Analytica | {title}</title>
 </svelte:head>
 
 <Header href="/" company="Engine" platformName="Analytica" bind:isSideNavOpen>
