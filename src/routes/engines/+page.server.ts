@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db.js';
+import { db } from '$lib/server/db';
 import { adminOnlyRoute } from '$lib/server/routing';
 import { z } from 'zod';
 

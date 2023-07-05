@@ -1,4 +1,4 @@
-import { isZodError } from '$lib/zod.js';
+import { isZodError } from '$lib/zod';
 import { auth } from '$lib/server/lucia';
 import { db } from '$lib/server/db';
 import { guestOnlyRoute } from '$lib/server/routing';
