@@ -9,7 +9,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
         with:
-          version: 7
+          version: 8
       - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
@@ -25,4 +25,4 @@ jobs:
         uses: prgm-dev/svelte-check-pr-annotator@main
 
       - name: Run Svelte-Check
-        run: pnpm svelte-check --output machine --use-new-transformation true
+        run: pnpm svelte-check --output machine
