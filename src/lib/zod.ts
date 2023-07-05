@@ -1,5 +1,5 @@
-import type { z } from 'zod';
+type Error = string[] | undefined;
 
-export const isZodError = (error: any): error is z.ZodError => {
+export const isZodError = (error: Error) => {
 	return error ? error[0] : null;
 };
