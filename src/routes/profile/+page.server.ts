@@ -18,7 +18,7 @@ const changeUserSchema = z.object({
 });
 
 export const actions = {
-	async default({ locals, request }) {
+	async default({ locals, request, getClientAddress }) {
 		const data = await parseFormData(request);
 
 		const { user } = await userOnlyRoute(locals);
@@ -90,7 +90,7 @@ export const actions = {
 			};
 		}
 
-		await auditLog(user.userId, user.username, 'modify', 'user');
+		await auditLog(user.userId, user.username, 'modify', 'user', getClientAddress());
 
 		return {
 			success: true,

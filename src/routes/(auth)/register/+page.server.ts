@@ -5,6 +5,7 @@ import { isZodError } from '$lib/zod';
 
 import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
+import { auditLog } from '$lib/server/auditlog';
 
 export const load = async ({ locals }) => {
 	await guestOnlyRoute(locals);
@@ -21,7 +22,7 @@ const registerSchema = z
 	.strict();
 
 export const actions = {
-	async default({ request, locals }) {
+	async default({ request, locals, getClientAddress }) {
 		const formData = await request.formData();
 
 		const data = registerSchema.safeParse(Object.fromEntries(formData.entries()));
@@ -94,7 +95,10 @@ export const actions = {
 
 			const session = await auth.createSession(user.userId);
 			locals.auth.setSession(session);
+
+			await auditLog(user.userId, user.username, 'register', 'user', getClientAddress());
 		} catch {
+			await auditLog('', '', 'register', 'user', getClientAddress(), 'failure');
 			return fail(400, {
 				success: false,
 				message: 'Email or username already exists',

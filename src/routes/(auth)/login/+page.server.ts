@@ -2,6 +2,7 @@ import { isZodError } from '$lib/zod';
 import { auth } from '$lib/server/lucia';
 import { db } from '$lib/server/db';
 import { guestOnlyRoute } from '$lib/server/routing';
+import { auditLog } from '$lib/server/auditlog';
 
 import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
@@ -18,13 +19,15 @@ const loginSchema = z
 	.strict();
 
 export const actions = {
-	async default({ request, locals }) {
+	async default({ request, locals, getClientAddress }) {
 		const formData = await request.formData();
 
 		const data = loginSchema.safeParse(Object.fromEntries(formData.entries()));
 
 		if (!data.success) {
 			const zodResult = data.error.flatten().fieldErrors;
+
+			await auditLog('', '', 'login', 'user', getClientAddress(), 'failure');
 
 			return fail(400, {
 				success: false,
@@ -60,7 +63,11 @@ export const actions = {
 
 			const session = await auth.createSession(key.userId);
 			locals.auth.setSession(session);
-		} catch {
+
+			await auditLog(key.userId, username, 'login', 'user', getClientAddress());
+		} catch (error) {
+			await auditLog('', username, 'login', 'user', getClientAddress(), 'failure');
+
 			return fail(400, {
 				success: false,
 				message: 'Invalid username or password',

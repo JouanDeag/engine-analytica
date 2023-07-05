@@ -60,14 +60,18 @@ model AuthKey {
 model AuditLog {
   id String @id @unique @default(uuid())
 
-  User   AuthUser @relation(references: [id], fields: [userId])
-  userId String   @map("user_id")
+  performer    String
+  action       String
+  actionResult String
 
-  action     String
   targetType String @map("target_type")
   target     String
 
-  createdAt DateTime @default(now()) @map("created_at")
+  clientAddress String
+
+  createdAt  DateTime  @default(now()) @map("created_at")
+  AuthUser   AuthUser? @relation(fields: [authUserId], references: [id])
+  authUserId String?
 
   @@map("audit_log")
 }

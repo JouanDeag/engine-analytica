@@ -1,27 +1,39 @@
 import { db } from '$lib/server/db';
 
-type AuditAction = 'create' | 'delete' | 'modify';
+type AuditAction =
+	| 'create'
+	| 'delete'
+	| 'modify'
+	| 'enabled'
+	| 'disabled'
+	| 'login'
+	| 'logout'
+	| 'register'
+	| 'changePassword';
+
 type AuditTargetType = 'user' | 'engine' | 'test';
+
+type AuditActionResult = 'success' | 'failure';
 
 export const auditLog = async (
 	userId: string,
 	target: string,
 	action: AuditAction,
-	targetType: AuditTargetType
+	targetType: AuditTargetType,
+	ip = '0.0.0.0',
+	result: AuditActionResult = 'success'
 ) => {
 	console.log();
 
 	try {
 		await db.auditLog.create({
 			data: {
-				User: {
-					connect: {
-						id: userId
-					}
-				},
+				performer: userId,
 				action: action,
+				actionResult: result,
 				target: target,
-				targetType: targetType
+				targetType: targetType,
+				clientAddress: ip
 			}
 		});
 	} catch (error) {

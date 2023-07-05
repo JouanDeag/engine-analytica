@@ -27,7 +27,7 @@ const changeUserSchema = z.object({
 });
 
 export const actions = {
-	async edit({ locals, request }) {
+	async edit({ locals, request, getClientAddress }) {
 		const { user } = await adminOnlyRoute(locals);
 		const data = await parseFormData(request);
 
@@ -201,14 +201,14 @@ export const actions = {
 			}
 		}
 
-		await auditLog(user.userId, validatedData.id, 'modify', 'user');
+		await auditLog(user.userId, validatedData.id, 'modify', 'user', getClientAddress());
 
 		return {
 			success: true,
 			message: 'User updated successfully'
 		};
 	},
-	async delete({ locals, request }) {
+	async delete({ locals, request, getClientAddress }) {
 		const { user } = await adminOnlyRoute(locals);
 		const data = await parseFormData(request);
 
@@ -264,7 +264,7 @@ export const actions = {
 			};
 		}
 
-		await auditLog(user.userId, id, 'delete', 'user');
+		await auditLog(user.userId, id, 'delete', 'user', getClientAddress());
 
 		return {
 			success: true,
@@ -272,7 +272,7 @@ export const actions = {
 		};
 	},
 
-	async disable({ locals, request }) {
+	async disable({ locals, request, getClientAddress }) {
 		const { user } = await adminOnlyRoute(locals);
 		const data = await parseFormData(request);
 
@@ -311,7 +311,7 @@ export const actions = {
 			};
 		}
 
-		await auditLog(user.userId, id, 'modify', 'user');
+		await auditLog(user.userId, id, 'disabled', 'user', getClientAddress());
 
 		return {
 			success: true,
@@ -319,7 +319,7 @@ export const actions = {
 		};
 	},
 
-	async enable({ locals, request }) {
+	async enable({ locals, request, getClientAddress }) {
 		const { user } = await adminOnlyRoute(locals);
 		const data = await parseFormData(request);
 
@@ -351,7 +351,7 @@ export const actions = {
 			};
 		}
 
-		await auditLog(user.userId, id, 'modify', 'user');
+		await auditLog(user.userId, id, 'enabled', 'user', getClientAddress());
 
 		return {
 			success: true,
