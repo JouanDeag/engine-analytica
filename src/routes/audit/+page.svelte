@@ -21,7 +21,7 @@
 			entry.id.includes(searchString) ||
 			entry.action.includes(searchString) ||
 			entry.target.includes(searchString) ||
-			entry.User.username.includes(searchString)
+			entry.performer.includes(searchString)
 		) {
 			return true;
 		}
