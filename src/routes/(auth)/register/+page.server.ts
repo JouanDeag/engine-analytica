@@ -75,7 +75,8 @@ export const actions = {
 					username: username.toLowerCase(),
 					email: email.toLowerCase(),
 					role: assignedRole,
-					disabled: shouldDisable
+					disabled: shouldDisable,
+					engineName: null
 				}
 			});
 
