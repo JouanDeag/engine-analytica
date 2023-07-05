@@ -28,7 +28,8 @@ model AuthUser {
   engineName String?
 
   // Tests created by user
-  Tests Test[]
+  Tests        Test[]
+  AuditActions AuditLog[]
 
   @@map("user")
 }
@@ -56,9 +57,24 @@ model AuthKey {
   @@map("auth_key")
 }
 
+model AuditLog {
+  id String @id @unique @default(uuid())
+
+  User   AuthUser @relation(references: [id], fields: [userId])
+  userId String   @map("user_id")
+
+  action     String
+  targetType String @map("target_type")
+  target     String
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("audit_log")
+}
+
 model Engine {
   // Internal ID
-  id String @id @default(uuid())
+  id String @id @unique @default(uuid())
 
   // Engine name
   name String @unique

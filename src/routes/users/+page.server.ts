@@ -2,6 +2,7 @@ import { db } from '$lib/server/db';
 import { auth } from '$lib/server/lucia';
 import { parseFormData } from '$lib/server/form';
 import { adminOnlyRoute } from '$lib/server/routing';
+import { auditLog } from '$lib/server/auditlog';
 
 import { z } from 'zod';
 
@@ -27,7 +28,7 @@ const changeUserSchema = z.object({
 
 export const actions = {
 	async edit({ locals, request }) {
-		await adminOnlyRoute(locals);
+		const { user } = await adminOnlyRoute(locals);
 		const data = await parseFormData(request);
 
 		let validatedData;
@@ -200,13 +201,15 @@ export const actions = {
 			}
 		}
 
+		await auditLog(user.userId, validatedData.id, 'modify', 'user');
+
 		return {
 			success: true,
 			message: 'User updated successfully'
 		};
 	},
 	async delete({ locals, request }) {
-		await adminOnlyRoute(locals);
+		const { user } = await adminOnlyRoute(locals);
 		const data = await parseFormData(request);
 
 		let id;
@@ -261,6 +264,8 @@ export const actions = {
 			};
 		}
 
+		await auditLog(user.userId, id, 'delete', 'user');
+
 		return {
 			success: true,
 			message: 'User deleted successfully'
@@ -306,6 +311,8 @@ export const actions = {
 			};
 		}
 
+		await auditLog(user.userId, id, 'modify', 'user');
+
 		return {
 			success: true,
 			message: 'User disabled successfully'
@@ -313,7 +320,7 @@ export const actions = {
 	},
 
 	async enable({ locals, request }) {
-		await adminOnlyRoute(locals);
+		const { user } = await adminOnlyRoute(locals);
 		const data = await parseFormData(request);
 
 		let id;
@@ -343,6 +350,8 @@ export const actions = {
 				message: 'An error occured when enabling user'
 			};
 		}
+
+		await auditLog(user.userId, id, 'modify', 'user');
 
 		return {
 			success: true,

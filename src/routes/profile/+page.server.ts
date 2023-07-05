@@ -3,12 +3,14 @@ import { db } from '$lib/server/db';
 import { z } from 'zod';
 import { parseFormData } from '$lib/server/form';
 import { userOnlyRoute } from '$lib/server/routing';
+import { auditLog } from '$lib/server/auditlog';
 
 export const load = async ({ locals }) => {
 	await userOnlyRoute(locals);
 };
 
 const changeUserSchema = z.object({
+	id: z.string().max(32),
 	username: z.string().max(32).optional(),
 	email: z.string().max(256).optional(),
 	role: z.enum(['user', 'admin']).optional(),
@@ -87,6 +89,8 @@ export const actions = {
 				message: 'Invalid data'
 			};
 		}
+
+		await auditLog(user.userId, user.username, 'modify', 'user');
 
 		return {
 			success: true,

@@ -141,7 +141,7 @@
 				<SideNavMenu icon={UserAdmin} text="Admin">
 					<SideNavLink icon={Events} href="/users" text="Users" />
 					<SideNavLink icon={QuadrantPlot} href="/engines" text="Engines" />
-					<SideNavLink icon={Catalog} href="/" text="Audit log" />
+					<SideNavLink icon={Catalog} href="/audit" text="Audit log" />
 				</SideNavMenu>
 			{/if}
 		</SideNavItems>
