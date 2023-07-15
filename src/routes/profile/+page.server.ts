@@ -10,7 +10,6 @@ export const load = async ({ locals }) => {
 };
 
 const changeUserSchema = z.object({
-	id: z.string().max(32),
 	username: z.string().max(32).optional(),
 	email: z.string().max(256).optional(),
 	role: z.enum(['user', 'admin']).optional(),
@@ -76,6 +75,19 @@ export const actions = {
 					};
 				}
 
+				const adminCount = await db.authUser.count({
+					where: {
+						role: 'admin'
+					}
+				});
+
+				if (adminCount === 1 && user.role === 'admin') {
+					return {
+						success: false,
+						message: 'Cannot remove the last admin'
+					};
+				}
+
 				auth.updateUserAttributes(user.userId, {
 					role: validatedData.role
 				});
@@ -83,7 +95,7 @@ export const actions = {
 				await auth.invalidateAllUserSessions(user.userId);
 				await auth.createSession(user.userId);
 			}
-		} catch (error) {
+		} catch {
 			return {
 				success: false,
 				message: 'Invalid data'
