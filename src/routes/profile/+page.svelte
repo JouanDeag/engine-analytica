@@ -16,17 +16,17 @@
 	export let form;
 </script>
 
-{#if form}
-	<InlineNotification
-		kind={form.success ? 'success' : 'error'}
-		title={form.success ? 'Success' : 'Error:'}
-		subtitle={form.message}
-	/>
-{/if}
-
 <Grid noGutter>
 	<Row>
 		<Column sm={10} md={10} lg={10}>
+			{#if form}
+				<InlineNotification
+					kind={form.success ? 'success' : 'error'}
+					title={form.success ? 'Success' : 'Error:'}
+					subtitle={form.message}
+				/>
+			{/if}
+
 			<h1>Edit profile</h1>
 			<p>Welcome {data.user.username}. You may update your details below.</p>
 			<p>Blank means no change</p>
