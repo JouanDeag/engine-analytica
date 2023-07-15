@@ -43,17 +43,16 @@
 	}
 </script>
 
-{#if form}
-	<InlineNotification
-		kind={form.success ? 'success' : 'warning'}
-		title={form.success ? 'Success:' : 'Warning:'}
-		subtitle={form.message || 'Invalid username or password'}
-	/>
-{/if}
-
 <Grid noGutter>
 	<Row>
 		<Column sm={10} md={8} lg={7}>
+			{#if form}
+				<InlineNotification
+					kind={form.success ? 'success' : 'warning'}
+					title={form.success ? 'Success:' : 'Warning:'}
+					subtitle={form.message || 'Invalid username or password'}
+				/>
+			{/if}
 			<h1>Login</h1>
 			<Column padding noGutterLeft>
 				<form method="POST" use:enhance on:submit={handleSubmit}>
