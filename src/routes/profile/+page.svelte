@@ -45,7 +45,7 @@
 					{#if data.user.engine}
 						<SelectItem value={data.user.engine} text={data.user.engine} />
 					{/if}
-					<SelectItem value="" text="None" />
+					<SelectItem value="none" text="None" />
 				</Select>
 
 				<FormGroup>

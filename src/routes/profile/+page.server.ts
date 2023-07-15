@@ -95,6 +95,34 @@ export const actions = {
 				await auth.invalidateAllUserSessions(user.userId);
 				await auth.createSession(user.userId);
 			}
+
+			if (validatedData.engine) {
+				if (validatedData.engine === 'none') {
+					await db.authUser.update({
+						where: {
+							id: user.userId
+						},
+						data: {
+							engine: {
+								disconnect: true
+							}
+						}
+					});
+				} else {
+					await db.authUser.update({
+						where: {
+							id: user.userId
+						},
+						data: {
+							engine: {
+								connect: {
+									name: validatedData.engine
+								}
+							}
+						}
+					});
+				}
+			}
 		} catch {
 			return {
 				success: false,
