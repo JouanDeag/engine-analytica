@@ -30,14 +30,11 @@
 	});
 </script>
 
-<Grid noGutter padding>
+<Grid noGutter>
 	<Row>
 		<Column>
 			<h1>Audit log</h1>
-		</Column>
-	</Row>
-	<Row>
-		<Column>
+			<br />
 			<DataTable
 				sortable
 				sortKey="createdAt"
