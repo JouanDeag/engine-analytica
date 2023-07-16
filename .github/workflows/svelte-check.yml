@@ -10,6 +10,7 @@ jobs:
         uses: pnpm/action-setup@v2.2.2
         with:
           version: 8
+          
       - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
@@ -19,6 +20,7 @@ jobs:
       - name: Install build dependencies 🧰
         run: |
           pnpm install
+          pnpx prisma generate
           pnpm svelte-kit sync
 
       - name: Add Svelte Check annotator
