@@ -20,7 +20,7 @@ jobs:
       - name: Install build dependencies 🧰
         run: |
           pnpm install
-          pnpx prisma generate
+          pnpx prisma@4.16.2 generate
           pnpm svelte-kit sync
 
       - name: Add Svelte Check annotator
