@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { navigating } from '$app/stores';
+
 	import 'carbon-components-svelte/css/all.css';
 	import {
 		Header,
@@ -16,7 +18,8 @@
 		Content,
 		Theme,
 		Button,
-		HeaderSearch
+		HeaderSearch,
+		Loading
 	} from 'carbon-components-svelte';
 	import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte';
 	import {
@@ -160,4 +163,7 @@
 
 <Content>
 	<slot />
+	{#if $navigating}
+		<Loading />
+	{/if}
 </Content>
