@@ -1,9 +1,10 @@
 import { auth } from '$lib/server/lucia';
 import { db } from '$lib/server/db';
-import { z } from 'zod';
 import { parseFormData } from '$lib/server/form';
 import { userOnlyRoute } from '$lib/server/routing';
 import { auditLog } from '$lib/server/auditlog';
+
+import { z } from 'zod';
 
 export const load = async ({ locals }) => {
 	await userOnlyRoute(locals);

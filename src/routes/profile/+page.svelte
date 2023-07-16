@@ -22,7 +22,7 @@
 			{#if form}
 				<InlineNotification
 					kind={form.success ? 'success' : 'error'}
-					title={form.success ? 'Success' : 'Error:'}
+					title={form.success ? 'Success:' : 'Error:'}
 					subtitle={form.message}
 				/>
 			{/if}
