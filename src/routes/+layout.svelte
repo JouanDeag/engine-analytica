@@ -84,6 +84,7 @@
 	<svelte:fragment slot="skip-to-content">
 		<SkipToContent />
 	</svelte:fragment>
+
 	<HeaderUtilities>
 		{#if data.session}
 			<HeaderSearch bind:value={searchString} {results} />
@@ -106,17 +107,26 @@
 			<HeaderPanelLinks>
 				{#if data.session}
 					<HeaderPanelDivider>My Engine</HeaderPanelDivider>
-					<HeaderPanelLink href="/">View history</HeaderPanelLink>
-					<HeaderPanelLink href="/">Modify configuration</HeaderPanelLink>
+					{#if data.user.engine}
+						<HeaderPanelLink href="/engines/{data.user.engine}">View history</HeaderPanelLink>
+						<HeaderPanelLink href="/">Modify configuration</HeaderPanelLink>
+					{:else}
+						<HeaderPanelLink>You do not have an engine</HeaderPanelLink>
+					{/if}
 				{/if}
+
 				<HeaderPanelDivider>My Profile</HeaderPanelDivider>
 
 				{#if data.session}
 					<HeaderPanelLink href="/profile">Update profile</HeaderPanelLink>
 					<HeaderPanelLink href="/">Change password</HeaderPanelLink>
-					<HeaderPanelLink data-sveltekit-preload-data="tap" on:click={invalidateAll} href="/logout"
-						>Log out</HeaderPanelLink
+					<HeaderPanelLink
+						data-sveltekit-preload-data="tap"
+						on:click={invalidateAll}
+						href="/logout"
 					>
+						Log out
+					</HeaderPanelLink>
 				{:else}
 					<HeaderPanelLink href="/login">Log in</HeaderPanelLink>
 					<HeaderPanelLink href="/register">Register</HeaderPanelLink>
