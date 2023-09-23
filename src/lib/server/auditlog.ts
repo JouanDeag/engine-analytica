@@ -23,8 +23,6 @@ export const auditLog = async (
 	ip = '0.0.0.0',
 	result: AuditActionResult = 'success'
 ) => {
-	console.log();
-
 	try {
 		await db.auditLog.create({
 			data: {
